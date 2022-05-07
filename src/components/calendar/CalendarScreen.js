@@ -1,7 +1,7 @@
 // Componente responsable calendario
 
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiOpenModal } from "../../actions/ui";
 import moment from "moment";
@@ -15,7 +15,7 @@ import { CalendarEvent } from "./CalendarEvent";
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { messages } from '../../helpers/calendar-messages-es';
 import 'moment/locale/es';
-import { eventClearActiveEvent, eventSetActive } from "../../actions/events";
+import { eventClearActiveEvent, eventSetActive, eventStartLoading } from "../../actions/events";
 import { AddButton } from "../ui/AddButton";
 import { DeleteEventFab } from "../ui/DeleteEventFab";
 
@@ -30,10 +30,17 @@ export const CalendarScreen = () => {
   // Hook que devuelve referencia al dispatch de la acción
   const dispatch = useDispatch();
 
+  // Leemos datos del estado del calendario y del estado de auth
   const { events, activeEvent } = useSelector(state => state.calendar);
+  const { uid } = useSelector(state => state.auth);
 
   /* Estado vista */
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month');
+
+
+  useEffect(() => {
+    dispatch(eventStartLoading())
+  }, [dispatch])
 
   // Creamos eventos:
 
@@ -61,8 +68,9 @@ export const CalendarScreen = () => {
   /* Función para aplicar estilos al evento creado en calendario */
   const eventStyleGetter = ( event, start, end, isSelected ) => {
 
+
     const style = {
-      backgroundColor: '#367CF7',
+      backgroundColor: (uid === event.user._id) ? '#367CF7' : '#465670',
       borderRadius: '0px',
       opacity: 0.8,
       display: 'block',

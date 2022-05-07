@@ -2,12 +2,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { eventStartAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/events';
+import { eventStartAddNew, eventClearActiveEvent, eventStartUpdate } from '../../actions/events';
 import { uiCloseModal } from '../../actions/ui';
 
 import Modal from 'react-modal';
 import moment from 'moment';
-import DateTimePicker from 'react-datetime-picker';
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
+
+// import DateTimePicker from 'react-datetime-picker';
 import Swal from 'sweetalert2';
 
 // Estilos para el modal
@@ -43,7 +46,8 @@ export const CalendarModal = () => {
   const[ titleOk, setTitleOk ] = useState(true);
   const[ formValues, setFormValues ] = useState(initEvent);
 
-  console.log(dateStart,dateEnd);
+  // console.log(dateStart,dateEnd);
+
   /* Hook para estar pendientes del ui y de calendar */
   const { modalOpen } = useSelector(state => state.ui);
   const { activeEvent } = useSelector(state => state.calendar);
@@ -52,6 +56,7 @@ export const CalendarModal = () => {
   const dispatch = useDispatch();
 
   const { title, notes, start, end } = formValues; // desestructuramos props de formValues
+
 
   /* Hook que está pendiente de los cambios en el activeEvent */
   useEffect(() => {
@@ -116,7 +121,7 @@ export const CalendarModal = () => {
 
     // Si existe el evento lo actualizamos si no lo creamos
     if(activeEvent) {
-      dispatch(eventUpdated(formValues))
+      dispatch(eventStartUpdate(formValues))
     } else {
       // Gestión del estado al crear un nuevo evento en el calendario
       dispatch(eventStartAddNew(formValues));
@@ -128,7 +133,6 @@ export const CalendarModal = () => {
 
   /* Pintamos nuestro modal */
   return (
-
    <Modal
     isOpen={ modalOpen }
     // onAfterOpen={afterOpenModal}
@@ -148,21 +152,48 @@ export const CalendarModal = () => {
 
       <div className="form-group">
         <label>Fecha y hora de inicio</label>
-        <DateTimePicker
+        <DatePicker
+          locale="es"
+          selected={dateStart}
+          onChange={ handleStartDateChange }
+          wrapperClassName="datePicker"
+          className= "form-control"
+          showTimeSelect
+          timeFormat='HH:mm'
+          timeIntervals={20}
+          timeCaption="time"
+          dateFormat="MMM d, yyyy h:mm aa"
+        />
+        {/* <DateTimePicker
           onChange={ handleStartDateChange }
           value={ start }
           className= "form-control"
-        />
+        /> */}
       </div>
 
       <div className="form-group">
         <label>Fecha y hora de finalización</label>
-        <DateTimePicker
+         <DatePicker
+          locale="es"
+          selected={dateEnd}
+          onChange={ handleEndDateChange }
+          className= "form-control"
+          showTimeSelect
+          timeFormat='HH:mm'
+          timeIntervals={20}
+          timeCaption="time"
+          dateFormat="MMM d, yyyy h:mm aa"
+          minDate={ dateStart }
+        />
+        {/* <DateTimePicker
           onChange={ handleEndDateChange }
           value={ end }
           minDate={ start } // establecer fecha mínima
           className= "form-control"
-        />
+          format="y-MM-dd h:mm:ss a"
+          amPmAriaLabel="Select AM/PM"
+        /> */}
+
       </div>
 
       <hr />
@@ -204,5 +235,6 @@ export const CalendarModal = () => {
     </form>
 
   </Modal>
+
   )
 }

@@ -60,10 +60,6 @@ html, body {
   outline: none;
 }
 
-.react-datetime-picker__wrapper {
-  display: flex;
-  border: 0px solid gray !important;
-}
 
 /* Button */
 .fab {

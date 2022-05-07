@@ -1,9 +1,10 @@
 
 // Definimos acción proceso autenticación
 
+import Swal from 'sweetalert2';
 import { fetchWihtoutToken, fetchWithToken } from "../helpers/fetch";
 import { types } from '../types/types';
-import Swal from 'sweetalert2';
+import { eventLogout } from "./events";
 
 export const startLogin = (email, password) => {
   return async(dispatch) => {
@@ -93,7 +94,8 @@ export const startLogout = () => {
 
     // limpiamos el localStorage y disparamos el logout
     localStorage.clear();
-    dispatch(logout())
+    dispatch(eventLogout());
+    dispatch(logout());
   }
 }
 

@@ -22,11 +22,10 @@ const fetchWihtoutToken = (endpoint, data, method = 'GET') => {
 const fetchWithToken = (endpoint, data, method = 'GET') => {
 
   const url = `${ baseUrl }/${ endpoint }`;
-  console.log(url);
-  console.log(data);
+
   // recuperamos el token del localStorage en caso de null string vacío
   const token = localStorage.getItem('token') || '';
-  console.log(token);
+  // console.log(token);
 
   if( method === 'GET') {
     return fetch(url, {
